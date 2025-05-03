@@ -3,9 +3,9 @@ The following code are examples of that used to investigate the effects of parti
 
 The particle-particle properties investigated for this research project were restitution, rolling friction and sliding friction. 
 
-## Run order ##
-simulation_launch.sh, generator.py
-Simulations also used a particle file 
+## Run order - for each of the particle-particle properties ##
+simulation_launch.sh --> generator.py
+(Simulations also used a particle file) 
 
 ## Curve fitting ##
 To calculate the mixing rate, a sigmoidal curve was fitted to each simulation mixing curve, using the file: sigmoidal_curve_fitting.py 
