@@ -1,18 +1,18 @@
 # Particle properties naming:
 #    PP  = Particle-Particle
-#    PW  = Particle-Wall (cylindrical hull of the GranuDrum)
-#    PSW = Particle-Sidewall (circular sides of the GranuDrum)
-variable restitution_pp         equal {{ restitution_pp }}           # Optimise as `sliding`
-variable restitution_pw         equal {{ restitution_pw }}          # Optimise
+#    PW  = Particle-Wall 
 
-variable sliding_pp     equal {{ sliding_pp }}           # Optimise as `rolling`
-variable sliding_pw     equal {{ sliding_pw }}           # Optimise
+variable fricRollPP        equal {{ fricRollPP }}           
+variable fricRollPW        equal {{ fricRollPW }}          
 
-variable corPP          equal {{ corPP }}           # Optimise
-variable corPW          equal {{ corPW }}           # Optimise
+variable fricPP     equal {{ fricPP }}           
+variable fricPW     equal {{ fricPW }}           
 
-variable cohPP          equal {{ cohPP }}             # Optimise as `cohesion`
-variable cohPW          equal {{ cohPW }}            # Optimise
+variable corPP          equal {{ corPP }}           
+variable corPW          equal {{ corPW }}           
+
+variable cohPP          equal {{ cohPP }}           
+variable cohPW          equal {{ cohPW }}           
 
 variable dens           equal 1580.0
 
