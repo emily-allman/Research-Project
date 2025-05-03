@@ -5,7 +5,7 @@ The particle-particle properties investigated for this research project were res
 
 ## Run order - for each of the particle-particle properties ##
 simulation_launch.sh --> generator.py
-(Simulations also used a particle file) 
+(each file requires the use of mesh1 - a file containing .geo files (cylinder.geo and inface.geo) and .sim files (particle.sim and shake.sim)) 
 
 ## Curve fitting ##
 To calculate the mixing rate, a sigmoidal curve was fitted to each simulation mixing curve, using the file: sigmoidal_curve_fitting.py 
