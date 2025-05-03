@@ -1,5 +1,5 @@
 """
-@author: Emily Allman
+@author: Emily Allman, based off code of J.Grogan
 """
 
 #------------------------------------------------------------------------------------------
@@ -21,80 +21,66 @@ gmsh.initialize()
 
 
 #------------------------------------------------------------------------------------------
-# Container Geometry Specifications - defining for container and mesh
+# Specifying RAM geometry
 #------------------------------------------------------------------------------------------
-
-# MCC particle size ~0.5 mm for 10% fill rate roughly 680,000 particles
 
 # cylinder dimensions
 z0_cylinder         = 0                 #m
 x0_cylinder         = 0                 #m
 y0_cylinder         = 0                 #m
 lc_cylinder         = 1e-7              #-
-cylinder_height     = 0.08               #m  
+cylinder_height     = 0.08              #m  (80 mm)
 
 # inface dimensions
-z0_inface           = 0.065      #m  # haven't changed this
+z0_inface           = 0.065      #      #m  - insertion just below cylinder top
 x0_inface           = 0                 #m
 y0_inface           = 0                 #m
 lc_inface           = 1e-7              #-
 
 # Mesh Configuration
 cylinder_mesh_max   = 0.005             #-
-cylinder_mesh_min   = 0.0               #-
+cylinder_mesh_min   = 0.0               #- 
 
-inface_mesh_max     = 0.05             #-
+inface_mesh_max     = 0.05              #- 
 inface_mesh_min     = 0.0               #-
 
 #------------------------------------------------------------------------------------------
-# Simulation Specifications - timestop, particle proerties...
+# Simulation parameters
 #------------------------------------------------------------------------------------------
 
-timestep            = 0.5e-5             #s
-dumptime            = 0.1             #s
+timestep            = 0.5e-5            #s
+dumptime            = 0.1               #s
 ontime              = 12.5              #s
 filltime            = 2                 #s
 settletime          = 2                 #s
-w                   = 392.322            #rad/s from 200 rad/s to 60hz
+w                   = 392.322           #rad/s (62.44hz)
 
-density             = 1580             #kg/m^3
+density             = 1580              #kg/m^3
 youngs_modulus      = 5e6               #Pa
 poisson_ratio       = 0.4               #-
 
-sliding_pp          = 0.720222
-sliding_pw          = 0.720222               #-
+sliding_pp          = 0.720222          #-
+sliding_pw          = 0.720222          #-
 
-num_studies         = 8                #-
+num_studies         = 8                 #-
 
 number_of_seeds     = 5
 
 restitution_pp      = 0.4
 restitution_pw      = 0.4
-
-# fricPP = 0.720222           
-# fricPW = 0.720222           
-# fricPSW = 0.720222           
-# fric = 0.720222           
-
-# fricRollPP = 0.043350           
+       
 fricRollPW = 0.043350  
 fricRollPP_min = 0.1
 fricRollPP_max = 0.8
-# fricRollPSW = 0.043350           
-# fricRoll = 0.043350 
 
 corPP = 0.664838           
-corPW = 0.664838           
-# corPSW = 0.664838          
-# cor = 0.664838           
+corPW = 0.664838                   
 
 cohPP = 0             
 cohPW = 0             
-# cohPSW = 0             
-# coh = 0  
 
 #------------------------------------------------------------------------------------------
-# Slurm Job Launch Specifications
+# Job specifications
 #------------------------------------------------------------------------------------------
 
 job_runtime         = "100:00:00"        # hr:min:sec
@@ -142,8 +128,8 @@ with open(os.path.join("mesh1", "particles.sim"), 'r') as f:
 # File Generation
 #------------------------------------------------------------------------------------------
 # List of N values to iterate over
-N_values = [35700, 53550, 71400, 89250, 107100, 124950, 142800, 160650, 178500]
-# N_values = [17850, 35700, 53550, 71400, 89250, 107100, 124950, 142800, 160650, 178500]
+N_values = [17850, 35700, 53550, 71400, 89250, 107100, 124950, 142800, 160650, 178500]
+# calculated number of particles given particle radii distrubtion for fill heights 10-100%
 
 #------------------------------------------------------------------------------------------
 # Updated File Generation with N values
