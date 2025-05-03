@@ -1,0 +1,130 @@
+# Variable density, radius, fill level
+
+# Simulation control
+variable Timestep           equal {{ timestep }}             # seconds
+variable DumpTime           equal {{ dumptime }}             # seconds
+
+variable OnTime             equal {{ ontime }}               # seconds
+variable FillTime           equal {{ filltime }}             # seconds
+variable SettleTime         equal {{ settletime }}           # seconds
+
+variable NumParticles       equal {{ number_particles }}     # Number of particles
+variable ParticleRate       equal ${NumParticles}*10         # Particle insertion rate
+
+variable youngs_modulus     equal {{youngs_modulus}}
+variable poisson_ratio      equal {{poisson_ratio}}
+
+variable fricRollPP     equal {{fricRollPP}}
+variable fricRollPW     equal {{fricRollPW}}
+
+variable AmpZ               equal 0.00509886683            # haven't changed this
+variable OscillationPeriod  equal 0.0160153748              # rad/s
+
+
+
+# Set up simulation style
+atom_style      granular
+atom_modify map array
+
+boundary        f f f                                        # fixed boundary conditions
+newton          off
+communicate     single vel yes
+units           si
+
+# Simulated region
+region domain block -0.05 0.05 -0.05 0.05 -0.02 0.3 units box    # domain in which cylinder shakes within
+create_box 2 domain
+
+include mesh/particles.sim
+
+# Set up neighbor-list
+neighbor        $(v_r1/2)  bin          #
+neigh_modify    delay   0
+hard_particles  yes
+soft_particles  yes
+
+# Particle / wall contact properties
+fix m1 all property/global youngsModulus peratomtype &
+    {{youngs_modulus}}    ${youngs_modulus}
+
+fix m2 all property/global poissonsRatio peratomtype &
+    ${poisson_ratio}     ${poisson_ratio}
+
+fix m3 all property/global coefficientFriction peratomtypepair 2        &
+    ${sliding_pp}        ${sliding_pw}                                    &
+    ${sliding_pw}        ${sliding_pw}
+
+fix m4 all property/global coefficientRollingFriction peratomtypepair 2 &
+    ${fricRollPP}        ${fricRollPW}                                    &
+    ${fricRollPW}        ${fricRollPW}
+
+fix m5 all property/global coefficientRestitution peratomtypepair 2     &
+    ${restitution_pp}    ${restitution_pw}                                &
+    ${restitution_pw}    ${restitution_pw}
+
+fix m6 all property/global cohesionEnergyDensity peratomtypepair 2      &
+    ${cohPP}       ${cohPW}                                   &
+    ${cohPW}       ${cohPW}
+
+fix m7 all property/global k_finnie peratomtypepair 2 1 1 1 1
+
+# Contact pair styles
+pair_style gran model hertz tangential history cohesion sjkr rolling_friction cdt 
+pair_coeff * *
+
+# Timestep size
+timestep ${Timestep}
+
+# Set gravity as a constant force
+fix gravi all gravity 9.81 vector 0.0 0.0 -1.0
+
+# STL Geometries: drum / faces
+fix cad all mesh/surface/stress file    mesh/shake_cylinder.stl        type 2 wear finnie
+fix inface all mesh/surface file        mesh/inface.stl                type 2
+
+# Wall contact models
+fix granwalls all wall/gran model hertz tangential history rolling_friction cdt &
+    mesh n_meshes 1 meshes cad
+
+# Particle insertion
+fix ins all insert/stream   seed {{ seed }}                 &
+                            distributiontemplate pdd        &
+                            nparticles ${NumParticles}      &
+                            particlerate ${ParticleRate}    &
+                            overlapcheck yes                &
+                            all_in no                       &
+                            vel constant 0.0 0.0 -0.5       &
+                            insertion_face inface extrude_length 0.16
+
+
+# Integration scheme
+fix integr all nve/sphere
+
+# Output settings, include total thermal energy
+modify_timing on 
+
+thermo        1000
+thermo_style  custom step atoms ke vol time
+thermo_modify lost ignore norm no
+
+
+# Save particle locations as VTK files straight from LIGGGHTS
+variable Dumpstep equal ${DumpTime}/${Timestep}
+dump dmp all custom/vtk ${Dumpstep} post/particles_*.vtk id type x y z ix iy iz vx vy vz fx fy fz omegax omegay omegaz radius 
+dump dmpMyMesh all mesh/vtk ${Dumpstep} post/mesh_*.vtk vel area cad
+
+# Evaluate digital twin
+variable OnSteps     equal ${OnTime}/${Timestep}
+variable FillSteps   equal ${FillTime}/${Timestep}
+variable SettleSteps equal ${SettleTime}/${Timestep}
+
+# Run simulation
+
+run ${FillSteps}                                                                                     # 2 second    Total = 2s
+
+fix move all move/mesh mesh cad wiggle amplitude 0. 0. ${AmpZ} period ${OscillationPeriod} # 12.5 second    Total = 14.5s
+run ${OnSteps}
+
+unfix move
+run ${SettleSteps}
+# 1 second Total = 15.5s
