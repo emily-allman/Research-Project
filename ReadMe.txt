@@ -2,8 +2,10 @@ The following code are examples of that used to investigate the effects of parti
 
 The particle-particle properties investigated for this research project were restitution, rolling friction and sliding friction. 
 
-Run order -> simulation_launch.sh, paper_packing_launch.sh
+Run order: simulation_launch.sh, generator.py
+Simulations also used a particle file 
 
+Curve fitting: 
 
 ### BlueBEAR ###
 Information about BlueBEAR and submitting jobs are as follows: https://docs.bear.bham.ac.uk/bluebear/jobs/
