@@ -15,15 +15,15 @@ module load natsort/8.2.0-foss-2022a
 export VENV_DIR="${HOME}/virtual-environments"
 export VENV_PATH="${VENV_DIR}/my-virtual-env-${BB_CPU}"
 
-# Create a master venv directory if necessary
+# Create master venv directory (if necessary)
 mkdir -p ${VENV_DIR}
 
-# Check if virtual environment exists and create it if not
+# Check virtual environment exists and create it if not
 if [[ ! -d ${VENV_PATH}  ]]; then
     python -m venv --system-site-packages ${VENV_PATH}
 fi
 
-# Activate the virtual environment
+# Activate virtual environment
 source ${VENV_PATH}/bin/activate
 
 # Perform any required pip installations. For reasons of consistency we would recommend
@@ -33,6 +33,6 @@ pip install gmsh
 
 # ----- Python script executing ----- #
 
-# Execute your Python scripts
+# Execute Python scripts
 python generator.py
 
